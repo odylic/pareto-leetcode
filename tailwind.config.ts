@@ -11,6 +11,23 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        card: {
+          bg: "var(--card-bg)",
+          border: "var(--card-border)",
+        },
+        accent: {
+          DEFAULT: "var(--accent)",
+          hover: "var(--accent-hover)",
+        },
+        difficulty: {
+          easy: "var(--success)",
+          medium: "var(--warning)",
+          hard: "var(--danger)",
+        },
+      },
+      fontFamily: {
+        sans: ["var(--font-geist-sans)"],
+        mono: ["var(--font-geist-mono)"],
       },
     },
   },
