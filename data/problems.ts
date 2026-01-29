@@ -1,3 +1,10 @@
+export interface AlternativeSolution {
+  title: string;
+  code: string;
+  timeComplexity: string;
+  spaceComplexity: string;
+}
+
 export interface Problem {
   id: number;
   slug: string;
@@ -12,6 +19,7 @@ export interface Problem {
   keyPoints: string[];
   timeComplexity: string;
   spaceComplexity: string;
+  alternativeSolutions?: AlternativeSolution[];
 }
 
 export const problems: Problem[] = [
@@ -45,6 +53,31 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(n)",
+    alternativeSolutions: [
+      {
+        title: "Sorting Approach",
+        code: `def containsDuplicate(nums: list[int]) -> bool:
+    nums.sort()
+    for i in range(1, len(nums)):
+        if nums[i] == nums[i - 1]:
+            return True
+    return False`,
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(1)",
+      },
+      {
+        title: "Enumerate with Dict Cache",
+        code: `def containsDuplicate(nums: list[int]) -> bool:
+    cache = {}
+    for i, num in enumerate(nums):
+        if num in cache:
+            return True
+        cache[num] = i
+    return False`,
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(n)",
+      },
+    ],
   },
   {
     id: 2,
@@ -84,6 +117,24 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(1)",
+    alternativeSolutions: [
+      {
+        title: "Using Counter",
+        code: `from collections import Counter
+
+def isAnagram(s: str, t: str) -> bool:
+    return Counter(s) == Counter(t)`,
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(1)",
+      },
+      {
+        title: "Sorting Approach",
+        code: `def isAnagram(s: str, t: str) -> bool:
+    return sorted(s) == sorted(t)`,
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+      },
+    ],
   },
   {
     id: 3,
@@ -116,6 +167,19 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(n)",
+    alternativeSolutions: [
+      {
+        title: "Brute Force (Two Loops)",
+        code: `def twoSum(nums: list[int], target: int) -> list[int]:
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            if nums[i] + nums[j] == target:
+                return [i, j]
+    return []`,
+        timeComplexity: "O(n²)",
+        spaceComplexity: "O(1)",
+      },
+    ],
   },
   {
     id: 4,
@@ -147,6 +211,25 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n * k log k)",
     spaceComplexity: "O(n * k)",
+    alternativeSolutions: [
+      {
+        title: "Character Count as Key",
+        code: `def groupAnagrams(strs: list[str]) -> list[list[str]]:
+    groups = {}
+    for s in strs:
+        # Count of each letter as key
+        count = [0] * 26
+        for c in s:
+            count[ord(c) - ord('a')] += 1
+        key = tuple(count)
+        if key not in groups:
+            groups[key] = []
+        groups[key].append(s)
+    return list(groups.values())`,
+        timeComplexity: "O(n * k)",
+        spaceComplexity: "O(n * k)",
+      },
+    ],
   },
   {
     id: 5,
@@ -188,6 +271,29 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(n)",
+    alternativeSolutions: [
+      {
+        title: "Using Heap",
+        code: `import heapq
+from collections import Counter
+
+def topKFrequent(nums: list[int], k: int) -> list[int]:
+    count = Counter(nums)
+    # Use min heap of size k
+    return heapq.nlargest(k, count.keys(), key=count.get)`,
+        timeComplexity: "O(n log k)",
+        spaceComplexity: "O(n)",
+      },
+      {
+        title: "Using Counter.most_common",
+        code: `from collections import Counter
+
+def topKFrequent(nums: list[int], k: int) -> list[int]:
+    return [x for x, _ in Counter(nums).most_common(k)]`,
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+      },
+    ],
   },
   {
     id: 6,
@@ -310,6 +416,30 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(n)",
+    alternativeSolutions: [
+      {
+        title: "Sorting Approach",
+        code: `def longestConsecutive(nums: list[int]) -> int:
+    if not nums:
+        return 0
+
+    nums.sort()
+    longest = 1
+    current = 1
+
+    for i in range(1, len(nums)):
+        if nums[i] != nums[i-1]:  # Skip duplicates
+            if nums[i] == nums[i-1] + 1:
+                current += 1
+            else:
+                current = 1
+            longest = max(longest, current)
+
+    return longest`,
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(1)",
+      },
+    ],
   },
 
   // ===== TWO POINTERS =====
@@ -352,6 +482,26 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(1)",
+    alternativeSolutions: [
+      {
+        title: "Clean String First",
+        code: `def isPalindrome(s: str) -> bool:
+    cleaned = ''.join(c.lower() for c in s if c.isalnum())
+    return cleaned == cleaned[::-1]`,
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(n)",
+      },
+      {
+        title: "Using Regex",
+        code: `import re
+
+def isPalindrome(s: str) -> bool:
+    cleaned = re.sub(r'[^a-zA-Z0-9]', '', s).lower()
+    return cleaned == cleaned[::-1]`,
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(n)",
+      },
+    ],
   },
   {
     id: 10,
@@ -443,6 +593,31 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n²)",
     spaceComplexity: "O(1)",
+    alternativeSolutions: [
+      {
+        title: "Using Set for Deduplication",
+        code: `def threeSum(nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    result = set()
+
+    for i in range(len(nums) - 2):
+        left, right = i + 1, len(nums) - 1
+        while left < right:
+            total = nums[i] + nums[left] + nums[right]
+            if total == 0:
+                result.add((nums[i], nums[left], nums[right]))
+                left += 1
+                right -= 1
+            elif total < 0:
+                left += 1
+            else:
+                right -= 1
+
+    return [list(t) for t in result]`,
+        timeComplexity: "O(n²)",
+        spaceComplexity: "O(n)",
+      },
+    ],
   },
   {
     id: 12,
@@ -755,6 +930,39 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(log n)",
     spaceComplexity: "O(1)",
+    alternativeSolutions: [
+      {
+        title: "Recursive Binary Search",
+        code: `def search(nums: list[int], target: int) -> int:
+    def binary_search(left, right):
+        if left > right:
+            return -1
+
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            return binary_search(mid + 1, right)
+        else:
+            return binary_search(left, mid - 1)
+
+    return binary_search(0, len(nums) - 1)`,
+        timeComplexity: "O(log n)",
+        spaceComplexity: "O(log n)",
+      },
+      {
+        title: "Using bisect",
+        code: `import bisect
+
+def search(nums: list[int], target: int) -> int:
+    idx = bisect.bisect_left(nums, target)
+    if idx < len(nums) and nums[idx] == target:
+        return idx
+    return -1`,
+        timeComplexity: "O(log n)",
+        spaceComplexity: "O(1)",
+      },
+    ],
   },
   {
     id: 20,
@@ -877,6 +1085,22 @@ export const problems: Problem[] = [
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(1)",
+    alternativeSolutions: [
+      {
+        title: "Recursive Approach",
+        code: `def reverseList(head: ListNode) -> ListNode:
+    if not head or not head.next:
+        return head
+
+    new_head = reverseList(head.next)
+    head.next.next = head
+    head.next = None
+
+    return new_head`,
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(n)",
+      },
+    ],
   },
   {
     id: 23,
@@ -1144,6 +1368,30 @@ class LRUCache:
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(h)",
+    alternativeSolutions: [
+      {
+        title: "Iterative BFS",
+        code: `from collections import deque
+
+def invertTree(root: TreeNode) -> TreeNode:
+    if not root:
+        return None
+
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        node.left, node.right = node.right, node.left
+
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+    return root`,
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(n)",
+      },
+    ],
   },
   {
     id: 29,
@@ -1173,6 +1421,54 @@ class LRUCache:
     ],
     timeComplexity: "O(n)",
     spaceComplexity: "O(h)",
+    alternativeSolutions: [
+      {
+        title: "Iterative BFS (Level Count)",
+        code: `from collections import deque
+
+def maxDepth(root: TreeNode) -> int:
+    if not root:
+        return 0
+
+    depth = 0
+    queue = deque([root])
+
+    while queue:
+        depth += 1
+        for _ in range(len(queue)):
+            node = queue.popleft()
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+    return depth`,
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(n)",
+      },
+      {
+        title: "Iterative DFS with Stack",
+        code: `def maxDepth(root: TreeNode) -> int:
+    if not root:
+        return 0
+
+    stack = [(root, 1)]
+    max_depth = 0
+
+    while stack:
+        node, depth = stack.pop()
+        max_depth = max(max_depth, depth)
+
+        if node.left:
+            stack.append((node.left, depth + 1))
+        if node.right:
+            stack.append((node.right, depth + 1))
+
+    return max_depth`,
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(n)",
+      },
+    ],
   },
   {
     id: 30,
@@ -1741,6 +2037,41 @@ def findKthLargest(nums: list[int], k: int) -> int:
     ],
     timeComplexity: "O(m × n)",
     spaceComplexity: "O(m × n)",
+    alternativeSolutions: [
+      {
+        title: "BFS Approach",
+        code: `from collections import deque
+
+def numIslands(grid: list[list[str]]) -> int:
+    if not grid:
+        return 0
+
+    rows, cols = len(grid), len(grid[0])
+    count = 0
+
+    def bfs(r, c):
+        queue = deque([(r, c)])
+        grid[r][c] = '0'
+
+        while queue:
+            row, col = queue.popleft()
+            for dr, dc in [(1,0), (-1,0), (0,1), (0,-1)]:
+                nr, nc = row + dr, col + dc
+                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == '1':
+                    grid[nr][nc] = '0'
+                    queue.append((nr, nc))
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1':
+                count += 1
+                bfs(r, c)
+
+    return count`,
+        timeComplexity: "O(m × n)",
+        spaceComplexity: "O(min(m, n))",
+      },
+    ],
   },
   {
     id: 44,
@@ -2052,3 +2383,14 @@ export const categories = [
   { name: "Heap", slug: "heap", count: 3 },
   { name: "Graphs", slug: "graphs", count: 7 },
 ];
+
+export function getAdjacentProblems(slug: string): {
+  prev: Problem | null;
+  next: Problem | null;
+} {
+  const index = problems.findIndex((p) => p.slug === slug);
+  return {
+    prev: index > 0 ? problems[index - 1] : null,
+    next: index < problems.length - 1 ? problems[index + 1] : null,
+  };
+}

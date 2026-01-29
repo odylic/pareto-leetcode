@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProblemBySlug, problems } from "@/data/problems";
+import { getProblemBySlug, getAdjacentProblems, problems } from "@/data/problems";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { CodeBlock } from "@/components/CodeBlock";
 import { Metadata } from "next";
@@ -38,6 +38,8 @@ export default async function ProblemPage({ params }: PageProps) {
   if (!problem) {
     notFound();
   }
+
+  const { prev, next } = getAdjacentProblems(slug);
 
   return (
     <main>
@@ -90,7 +92,33 @@ export default async function ProblemPage({ params }: PageProps) {
           </Link>
         </div>
         <CodeBlock code={problem.solution} />
+        <div className="mt-2 flex gap-4 text-sm text-foreground/50">
+          <span>Time: <span className="font-mono">{problem.timeComplexity}</span></span>
+          <span>Space: <span className="font-mono">{problem.spaceComplexity}</span></span>
+        </div>
       </section>
+
+      {problem.alternativeSolutions && problem.alternativeSolutions.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-foreground">
+            Alternative Solutions
+          </h2>
+          <div className="space-y-6">
+            {problem.alternativeSolutions.map((alt, i) => (
+              <div key={i}>
+                <h3 className="text-base font-medium text-foreground/80 mb-2">
+                  {alt.title}
+                </h3>
+                <CodeBlock code={alt.code} />
+                <div className="mt-2 flex gap-4 text-sm text-foreground/50">
+                  <span>Time: <span className="font-mono">{alt.timeComplexity}</span></span>
+                  <span>Space: <span className="font-mono">{alt.spaceComplexity}</span></span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3 text-foreground">
@@ -125,25 +153,42 @@ export default async function ProblemPage({ params }: PageProps) {
         </ul>
       </section>
 
-      <section className="p-5 bg-card-bg border border-card-border rounded-lg">
-        <h2 className="text-base font-semibold mb-2 text-foreground/60 uppercase tracking-wide">
-          Complexity
-        </h2>
-        <div className="flex gap-6 text-base">
-          <div>
-            <span className="text-foreground/50">Time: </span>
-            <span className="font-mono text-foreground">
-              {problem.timeComplexity}
+      {/* Navigation */}
+      <nav className="flex items-center justify-between pt-8 border-t border-card-border">
+        {prev ? (
+          <Link
+            href={`/problems/${prev.slug}`}
+            className="group flex flex-col items-start"
+          >
+            <span className="text-sm text-foreground/50 mb-1">← Previous</span>
+            <span className="text-base text-foreground group-hover:text-accent transition-colors">
+              {prev.name}
             </span>
-          </div>
-          <div>
-            <span className="text-foreground/50">Space: </span>
-            <span className="font-mono text-foreground">
-              {problem.spaceComplexity}
+            {prev.category !== problem.category && (
+              <span className="text-sm text-foreground/40">{prev.category}</span>
+            )}
+          </Link>
+        ) : (
+          <div />
+        )}
+
+        {next ? (
+          <Link
+            href={`/problems/${next.slug}`}
+            className="group flex flex-col items-end text-right"
+          >
+            <span className="text-sm text-foreground/50 mb-1">Next →</span>
+            <span className="text-base text-foreground group-hover:text-accent transition-colors">
+              {next.name}
             </span>
-          </div>
-        </div>
-      </section>
+            {next.category !== problem.category && (
+              <span className="text-sm text-foreground/40">{next.category}</span>
+            )}
+          </Link>
+        ) : (
+          <div />
+        )}
+      </nav>
     </main>
   );
 }
